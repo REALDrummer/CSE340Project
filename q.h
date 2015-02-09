@@ -5,7 +5,7 @@ struct Queue {
 	struct Element* head = NULL;
 	struct Element* tail = NULL;
 	// int size = 0;
-}
+};
 
 struct Element {
 	void* payload;
@@ -52,5 +52,12 @@ struct Queue* newQueue();
  * @return the number of Elements that were present in the deleted Queue. */
 int deleteQueue(struct Queue* queue);
 
-/** TODO: What should this do? */
+/** This function moves the header pointer to the next element in the queue. 
+ *	This is equivalent to AddQ(&head, DeleteQ(&head)).
+ *
+ * @param queue
+ *		is a pointer to the queue which we want to roate the head of
+ *
+ * @return void
+*/
 void rotateQ(struct Queue* queue);
