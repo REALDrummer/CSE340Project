@@ -71,12 +71,20 @@ void* dequeue(struct Queue* queue) {
 	if (queue->first == NULL)
 		return NULL;
 
-	// if the Queue only has one Element, leave it as am empty Queue
-	if (queue->first == queue->last)
-		queue->first = queue->last = NULL;
-
 	// make a copy of the payload pointer for safe keeping
-	void* payload = queue->last->payload;
+	void* payload = queue->first->payload;
+
+	// if the Queue only has one Element, leave it as am empty Queue
+	if (queue->first == queue->last) {
+		free(queue->first);
+		queue->first = queue->last = NULL;
+	} else {  // otherwise, remove the first Element
+		struct Element* new_first = queue->first->next;
+		free(queue->first);
+		queue->first = new_first;
+	}
+
+	return payload;
 }
 
 /** This function "peeks" at the last Element in the Queue.
