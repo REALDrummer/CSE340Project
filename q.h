@@ -6,7 +6,6 @@
 struct Queue {
 	struct Element* first = NULL;
 	struct Element* last = NULL;
-// int size = 0;
 };
 
 struct Element {
@@ -55,18 +54,15 @@ struct Element* enqueue(struct Queue* queue, void* payload) {
 }
 
 /** This function removes the Element at the beginning the given Queue.
- * <hr>
- * NOTE: This function will deallocate the memory space of the Element removed, but it will not deallocate the memory space of the payload itself!
- * Make sure you do that yourself if needed! Also note that this function returns the pointer to that payload, so you could simply use the code below to ensure
- * that payload is deallocated immediately: <pre>
- * 		free(dequeue(queue));
- * </pre>
  * 
  * @param queue
  * 		is a pointer to the Queue that will have its first element dequeued.
+ * @param free_payload
+ * 		determines whether or not the payload of the dequeued Element should be removed from memory. <br>
+ * 		The <b>char</b> here is used according to C truthiness: 0 = false, anything else = true.
  * 
  * @return a pointer to the payload of the Element that was removeed from the Queue. */
-void* dequeue(struct Queue* queue) {
+void* dequeue(struct Queue* queue, char free_payload) {
 	// if the Queue is empty, return NULL
 	if (queue->first == NULL)
 		return NULL;
@@ -84,36 +80,94 @@ void* dequeue(struct Queue* queue) {
 		queue->first = new_first;
 	}
 
+	if (free_payload)
+		free(payload);
+
 	return payload;
 }
 
-/** This function "peeks" at the last Element in the Queue.
+/** This function "peeks" at the first Element in the Queue.
  * 
  * @param queue
- * 		is a pointer to the queue which we want the payload of the last Element from.
+ * 		is a pointer to the queue which we want the payload of the first Element from.
  * 
- * @return a pointer to the payload of the last Element in the Queue */
-void* peek(struct Queue* queue);
+ * @return a pointer to the payload of the first Element in the Queue */
+void* peek(struct Queue* queue) {
+	return queue->first->payload;
+}
 
 /** This function creates and initializes a new Queue.
  * 
  * @return a pointer to the new Queue struct.*/
-struct Queue* newQueue();
+struct Queue* newQueue() {
+	struct Queue* new_queue = malloc(sizeof(struct Queue));
+	new_queue->first = NULL;
+	new_queue->last = NULL;
+	return new_queue;
+}
 
 /** This function deletes the given Queue.
  * 
  * @param queue
  * 		is a pointer to the Queue to be deleted.
+ * @param free_payloads
+ * 		determines whether or not the payloads of the Elements in this Queue should be removed from memory. <br>
+ * 		The <b>char</b> here is used according to C truthiness: 0 = false, anything else = true.
  * 
  * @return the number of Elements that were present in the deleted Queue. */
-int deleteQueue(struct Queue* queue);
+unsigned int deleteQueue(struct Queue* queue, char free_payloads) {
+	// if the Queue is empty, just free its pointers and return 0
+	if (queue->first == NULL) {
+		free(queue);
+		return 0;
+	}
 
-/** This function moves the header pointer to the next element in the queue. 
- *	This is equivalent to AddQ(&head, DeleteQ(&head)).
+	// keep track of the number of Elements removed to return it at the end
+	unsigned int size_of_queue = 1;  // init to 1 since we know we have 1+ Elements anyway
+
+	// first, keep removing Elements until we're down to one
+	while (queue->first != queue->last) {
+		size_of_queue++;
+
+		void* payload = dequeue(queue);
+		if (free_payloads)
+			free(payload);
+	}
+
+	// finally, free the last Element, free the Queue, and return the number of Elements we removed
+	free(queue->first);
+	free(queue);
+	return size_of_queue;
+}
+
+/** This function effectively shifts the given Queue forward one item, making the third item the second, the second item the first, and
+ * moving the first item down to the end of the Queue.
  *
  * @param queue
- *		is a pointer to the queue which we want to roate the head of
+ * 				is the Queue that will be rotated.
  *
- * @return void
- */
-void rotateQ(struct Queue* queue);
+ * @return a pointer to the payload of the Element that was first in the given Queue prior to rotation (at the end of the Queue after rotation).
+ *  */
+void* rotateQueue(struct Queue* queue) {
+	// if the given Queue is empty, do nothing and return a NULL payload
+	if (queue->first == NULL)
+		return NULL;
+	// if the given Queue only has one Element, do nothing and return that Element's payload
+	else if (queue->first == queue->last)
+		return queue->first->payload;
+
+	// keep track of the Element to be moved to the end
+	struct Element* rotated_element = queue->first;
+
+	// disconnect the rotated Element from the front of the Queue
+	queue->first = queue->first->next;
+	rotated_element->next = NULL;
+	queue->first->previous = NULL;
+
+	// connect the rotated Element to the end of the Queue
+	queue->last->next = rotated_element;
+	rotated_element->previous = queue->last;
+	queue->last = rotated_element;
+
+	return rotated_element->payload;
+}
