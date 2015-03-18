@@ -5,17 +5,17 @@
 
 #include <stdio.h>  // included for NULL
 
-struct Queue run_queue = newQueue();
-
 struct Queue {
-	struct Element* first = NULL;
-	struct Element* last = NULL;
+	struct Element* first;
+	struct Element* last;
 };
+
+struct Queue* run_queue;
 
 struct Element {
 	void* payload;
-	struct Element* next = NULL;
-	struct Element* previous = NULL;
+	struct Element* next;
+	struct Element* previous;
 };
 
 // STATIC UTILITIES
@@ -133,7 +133,7 @@ unsigned int deleteQueue(struct Queue* queue, char free_payloads) {
 	while (queue->first != queue->last) {
 		size_of_queue++;
 
-		void* payload = dequeue(queue);
+		void* payload = dequeue(queue, 1);
 		if (free_payloads)
 			free(payload);
 	}

@@ -19,7 +19,7 @@ TCB_t* run() {
     ucontext_t parent;      // allocate space to hold a fake context to context switch from
     getcontext(&parent);    // magic sauce that creates a fake context since we are currently without a context to get
 
-    TCB_t* new_context = &(run_queue.first->payload);  // get the new context from the run queue
+    TCB_t* new_context = &(run_queue->first->payload);  // get the new context from the run queue
 
     swapcontext(&parent, &(new_context->context));    // start the first thread
 
@@ -27,11 +27,11 @@ TCB_t* run() {
 }
 
 TCB_t* yield() {
-    ucontext_t* current_context = &(run_queue.first->payload->context);     // keep track of the old context we're switching out of
+    ucontext_t* current_context = &(((TCB_t*) run_queue->first->payload)->context);     // keep track of the old context we're switching out of
 
     rotateQueue(run_queue);     // rotate the run queue
 
-    TCB_t* new_context = &(run_queue.first->payload);   // get the new context from the run queue
+    TCB_t* new_context = &(run_queue->first->payload);   // get the new context from the run queue
 
     swapcontext(current_context, &(new_context->context));     // switch to the new context now at the front of the run queue
 
