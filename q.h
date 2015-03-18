@@ -25,7 +25,7 @@ static struct Element* newElement(void* payload) {
 
 //GLOBAL VARIABLES
 
-//FORWARD DECLATATIONS
+//FORWARD DECLARATIONS
 /** This function adds a new element to the end of the Queue.
  * <hr>
  * NOTE: This method will not copy the payload into the given Queue; it will only keep the pointer to the payload given.
