@@ -1,7 +1,11 @@
 //CSE430 Project 1
 //@author Zach Josephson and Connor Davey
+#ifndef Q_H
+#define Q_H
 
 #include <stdio.h>  // included for NULL
+
+struct Queue run_queue = newQueue();
 
 struct Queue {
 	struct Element* first = NULL;
@@ -171,3 +175,5 @@ void* rotateQueue(struct Queue* queue) {
 
 	return rotated_element->payload;
 }
+
+#endif
