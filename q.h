@@ -27,15 +27,61 @@ static struct Element* newElement(void* payload) {
 	return new_element;
 }
 
-//GLOBAL VARIABLES
+// GLOBAL UTILITIES
+/** This function determines the size of the given Queue.
+*
+* @param queue is the Queue which we want the size of.
+*
+* @return the number of elements in the Queue. */
+unsigned int size(struct Queue* queue) {
+	if (queue->first == NULL)
+		return 0;
+	else if (queue->first == queue->last)
+		return 1;
+	else {
+		unsigned int size = 0;
 
-//FORWARD DECLARATIONS
+		struct Element *element = queue->first;
+		while (element != NULL) {
+			size++;
+			element = element->next;
+		}
+		return size;
+	}
+}
+
+/** This function creates a string describing the contents of the queue.
+*
+* @param queue is the Queue whose contents should be printed (using <b>printf</b>). */
+char* toString(struct Queue* queue) {
+	if (queue->first == NULL)
+		return "EMPTY!";
+	else {
+		char* string = malloc(35 * size(queue) * sizeof(char));
+
+		struct Element* element = queue->first;
+		unsigned int i = 0;
+		while (element != NULL) {
+			// use sprintf to construct the string for this specific element
+			char* substring[35];
+			sprintf(substring, "0x%08x<-0x%08x->0x%08x\n", element->previous == NULL ? NULL : element->previous->payload, element->payload, element->next == NULL ? NULL : element->next->payload);
+			// copy the string into the larger final answer
+			memcpy(&string[35 * i], substring, 35);
+			// iterate
+			element = element->next;
+			i++;
+		}
+
+		return string;
+	}
+}
+
 /** This function adds a new element to the end of the Queue.
  * <hr>
  * NOTE: This method will not copy the payload into the given Queue; it will only keep the pointer to the payload given.
  * Avoid dangling pointers!
  * 
- * @para queue
+ * @param queue
  * 		is a pointer to the Queue
  * @param payload 
  * 		is a pointer to the data to put inside the new Queue Element.
