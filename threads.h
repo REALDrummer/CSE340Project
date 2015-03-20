@@ -35,9 +35,6 @@ TCB_t* yield() {
 
     swapcontext(current_context, &new_context->context);     // switch to the new context now at the front of the run queue
 
-    // TODO TEMP
-    printf("%s", toString(run_queue));
-
     return new_context;
 }
 

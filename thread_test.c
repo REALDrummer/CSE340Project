@@ -1,5 +1,7 @@
 #include "threads.h"
 
+#define true 1
+
 //Global variables
 struct Queue* run_queue;
 
@@ -8,22 +10,25 @@ int x = 0;
 void counter(){
 	do {
 		x++;
+		yield();
 	} while (true);
 } 
 
 void printEven(){
 	do {
 		if ((x % 2) == 0){
-			printf("%d", x);
+			printf("%d - even\n", x);
 		}
+		yield();
 	} while (true);
 }
 
 void printOdd(){
 	do {
 		if ((x % 2) == 1){
-			printf("%d", x);
+			printf("%d - odd\n", x);
 		}
+		yield();
 	} while (true);
 }
 
