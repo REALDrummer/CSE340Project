@@ -1,4 +1,5 @@
 #include "threads.h"
+#include "sem.h"
 
 #define true 1
 
@@ -16,8 +17,8 @@ void counter(){
 
 void printEven(){
 	do {
-		if ((x % 2) == 0){
-			printf("%d - even\n", x);
+		if ((x % 3) == 0){
+			printf("%d - |3\n", x);
 		}
 		yield();
 	} while (true);
@@ -25,8 +26,8 @@ void printEven(){
 
 void printOdd(){
 	do {
-		if ((x % 2) == 1){
-			printf("%d - odd\n", x);
+		if ((x % 5) == 0){
+			printf("%d - |5\n", x);
 		}
 		yield();
 	} while (true);

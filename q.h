@@ -3,7 +3,10 @@
 #ifndef Q_H
 #define Q_H
 
-#include <stdio.h>  // included for NULL
+#include <stdio.h>
+
+#define TRUE 1
+#define FALSE 0
 
 struct Queue {
 	struct Element* first;
