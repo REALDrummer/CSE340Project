@@ -1,3 +1,5 @@
+//CSE340 Project 2
+//Authors: Zach Josephson and Connor Davey
 #include "threads.h"
 #include "sem.h"
 
