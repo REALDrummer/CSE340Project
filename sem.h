@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "threads.h"
 #include "tcb.h"
 #include "q.h"
 
@@ -29,12 +30,15 @@ void P(struct Semaphore* semaphore) {
 }
 
 void V(struct Semaphore* semaphore) {
-    semaphore->value++;
-
     if (semaphore->value <= 0) {
         TCB_t* task_to_run = (TCB_t*) dequeue(semaphore->queue, FALSE);
-        enqueue(run_queue, task_to_run);
+        if (task_to_run != NULL)
+            enqueue(run_queue, task_to_run);
     }
+
+    semaphore->value++;
+
+    yield();
 }
 
 #endif //_CSE340_PROJECT_3_SEM_H_
