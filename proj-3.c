@@ -24,8 +24,6 @@ void printCounter(){
 	} while (1);
 }
 
-
-
 int main() {
 	run_sem = newSemaphore(0);
 
