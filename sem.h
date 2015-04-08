@@ -28,11 +28,13 @@ void P(struct Semaphore* semaphore) {
     semaphore->value--;
 
     // move a task from the run queue to this queue
-    TCB_t* task_to_block = (TCB_t*) dequeue(run_queue, FALSE);
-    if (task_to_block != NULL)
-        enqueue(semaphore->queue, task_to_block);
+    if (semaphore->value < 0) {
+        TCB_t *task_to_block = (TCB_t *) dequeue(run_queue, FALSE);
+        if (task_to_block != NULL)
+            enqueue(semaphore->queue, task_to_block);
 
-    yield();
+        yield();
+    }
 }
 
 void V(struct Semaphore* semaphore) {

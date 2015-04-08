@@ -12,7 +12,18 @@ void counter(){
 	do{
 		P(run_sem);
 		x++;
+		sleep(2);
 		V(run_sem);
+		printf("1: %d\n", x);
+	} while (1);
+}
+
+void counter2() {
+	do{
+		P(run_sem);
+		x+=2;
+		V(run_sem);
+		printf("2: %d\n", x);
 	} while (1);
 }
 
@@ -25,26 +36,15 @@ void printCounter(){
 }
 
 int main() {
-	run_sem = newSemaphore(5);
-
-	// TODO TEMP
-	printf("0\n");
+	run_sem = newSemaphore(1);
 
 	run_queue = newQueue();
 
-	// TODO TEMP
-	printf("1\n");
-
 	start_thread(counter);
 	start_thread(printCounter);
-
-	// TODO TEMP
-	printf("2\n");
+	start_thread(counter2);
 
 	run();
-
-	// TODO TEMP
-	printf("3\n");
 
 	return 0;
 }
