@@ -91,6 +91,11 @@ char* toString(struct Queue* queue) {
  *
  * @return a pointer to the Element created to contain the given payload.*/
 struct Element* enqueue(struct Queue* queue, void* payload) {
+	if (queue == NULL) {
+		printf("This queue is null, you fool!\n");
+		exit(1);
+	}
+
 	// create a new Element with the given payload
 	struct Element* new_element = newElement(payload);
 

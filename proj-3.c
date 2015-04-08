@@ -24,17 +24,27 @@ void printCounter(){
 	} while (1);
 }
 
-
-
 int main() {
-	run_sem = newSemaphore(0);
+	run_sem = newSemaphore(5);
+
+	// TODO TEMP
+	printf("0\n");
 
 	run_queue = newQueue();
+
+	// TODO TEMP
+	printf("1\n");
 
 	start_thread(counter);
 	start_thread(printCounter);
 
+	// TODO TEMP
+	printf("2\n");
+
 	run();
+
+	// TODO TEMP
+	printf("3\n");
 
 	return 0;
 }
