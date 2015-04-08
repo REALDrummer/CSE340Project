@@ -8,7 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "threads.h"
-#include "tcb.h"
 #include "q.h"
 
 struct Semaphore {
@@ -21,22 +20,31 @@ struct Semaphore* newSemaphore(int initial_value) {
 
     new_semaphore->value = initial_value;
     new_semaphore->queue = newQueue();
+
+    return new_semaphore;
 }
 
 void P(struct Semaphore* semaphore) {
     semaphore->value--;
 
-    while (semaphore->value <= 0);
+    // move a task from the run queue to this queue
+    if (semaphore->value < 0) {
+        TCB_t *task_to_block = (TCB_t *) dequeue(run_queue, FALSE);
+        if (task_to_block != NULL)
+            enqueue(semaphore->queue, task_to_block);
+
+        yield();
+    }
 }
 
 void V(struct Semaphore* semaphore) {
+    semaphore->value++;
+
     if (semaphore->value <= 0) {
-        TCB_t* task_to_run = (TCB_t*) dequeue(semaphore->queue, FALSE);
+        TCB_t *task_to_run = (TCB_t *) dequeue(semaphore->queue, FALSE);
         if (task_to_run != NULL)
             enqueue(run_queue, task_to_run);
     }
-
-    semaphore->value++;
 
     yield();
 }
