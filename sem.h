@@ -29,16 +29,10 @@ void P(struct Semaphore* semaphore) {
 
     // move a task from the run queue to this queue
     TCB_t* task_to_block = (TCB_t*) dequeue(run_queue, FALSE);
-    if (task_to_block != NULL) {
-        if (semaphore->queue == NULL) {
-            printf("This semaphore's queue was null for some reason; whatever...\n");
-            semaphore->queue = newQueue();
-        }
+    if (task_to_block != NULL)
         enqueue(semaphore->queue, task_to_block);
-    }
 
-    // busy-loop
-    while (semaphore->value <= 0);
+    yield();
 }
 
 void V(struct Semaphore* semaphore) {
