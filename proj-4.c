@@ -14,6 +14,7 @@ int next_number = 0;
 void reader1() {
 	while (true) {
 		reading->value++;
+		P(writing);
 		
 		FILE* file = fopen("test file.txt", "r");
 		if (file == NULL) {
@@ -27,6 +28,7 @@ void reader1() {
 			
 		fclose(file);
 		
+		V(writing);
 		reading->value--;
 		
 		yield();
@@ -36,6 +38,7 @@ void reader1() {
 void reader2() {
 	while (true) {
 		reading->value++;
+		P(writing);
 		
 		FILE* file = fopen("test file.txt", "r");
 		if (file == NULL) {
@@ -49,6 +52,7 @@ void reader2() {
 			
 		fclose(file);
 		
+		V(writing);
 		reading->value--;
 		
 		yield();
@@ -58,6 +62,7 @@ void reader2() {
 void reader3() {
 	while (true) {
 		reading->value++;
+		P(writing);
 		
 		FILE* file = fopen("test file.txt", "r");
 		if (file == NULL) {
@@ -71,6 +76,7 @@ void reader3() {
 			
 		fclose(file);
 		
+		V(writing);
 		reading->value--;
 		
 		yield();
