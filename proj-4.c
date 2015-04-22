@@ -11,6 +11,8 @@ struct Semaphore* writing;
 struct Semaphore* readingBlock;
 struct Semaphore* writingBlock;
 
+struct Queue* run_queue;
+
 int next_number = 0;
 
 
@@ -155,10 +157,10 @@ void writer1() {
 		
         V(writingBlock);
         P(writing);
-        wc--;
+        wc = wc - 1;
         if(wc == 0){
             V(readingBlock);
-            yield();
+            
         }
 		V(writing);
 		
@@ -191,14 +193,14 @@ void writer2() {
 		
         V(writingBlock);
         P(writing);
-        wc--;
+        wc = wc - 1;
         if(wc == 0){
             V(readingBlock);
-            yield();
+            
         }
         V(writing);
         
-        //yield();
+        yield();
 	}
 }
 
