@@ -38,6 +38,9 @@ void P(struct Semaphore* semaphore) {
 }
 
 void V(struct Semaphore* semaphore) {
+	// TODO TEMP
+	printf("entering V...\n");
+
     semaphore->value++;
 
     if (semaphore->value <= 0) {
@@ -46,6 +49,9 @@ void V(struct Semaphore* semaphore) {
             enqueue(run_queue, task_to_run);
     }
 
+	// TODO TEMP
+	printf("leaving V on a yield...\n");	
+	
     yield();
 }
 

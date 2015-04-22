@@ -121,6 +121,11 @@ struct Element* enqueue(struct Queue* queue, void* payload) {
  * 
  * @return a pointer to the payload of the Element that was removeed from the Queue. */
 void* dequeue(struct Queue* queue, char free_payload) {
+	if (queue == NULL) {
+		printf("This queue is null, you fool!\n");
+		exit(1);
+	}
+	
 	// if the Queue is empty, return NULL
 	if (queue->first == NULL)
 		return NULL;
@@ -151,6 +156,11 @@ void* dequeue(struct Queue* queue, char free_payload) {
  * 
  * @return a pointer to the payload of the first Element in the Queue */
 void* peek(struct Queue* queue) {
+	if (queue == NULL) {
+		printf("This queue is null, you fool!\n");
+		exit(1);
+	}
+	
 	return queue->first->payload;
 }
 
@@ -207,6 +217,11 @@ unsigned int deleteQueue(struct Queue* queue, char free_payloads) {
  * @return a pointer to the payload of the Element that was first in the given Queue prior to rotation (at the end of the Queue after rotation).
  *  */
 void* rotateQueue(struct Queue* queue) {
+	if (queue == NULL) {
+		printf("This queue is null, you fool!\n");
+		exit(1);
+	}
+	
 	// if the given Queue is empty, do nothing and return a NULL payload
 	if (queue->first == NULL)
 		return NULL;

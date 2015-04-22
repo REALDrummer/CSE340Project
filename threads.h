@@ -44,6 +44,9 @@ TCB_t* run() {
 }
 
 TCB_t* yield() {
+	// TODO TEMP
+	printf("yielding with run queue:\n%s\n", toString(run_queue));
+
     ucontext_t* current_context = &((TCB_t*) run_queue->first->payload)->context;     // keep track of the old context we're switching out of
 
     rotateQueue(run_queue);     // rotate the run queue
@@ -51,6 +54,9 @@ TCB_t* yield() {
     TCB_t* new_context = (TCB_t*) run_queue->first->payload;   // get the new context from the run queue
 
     swapcontext(current_context, &new_context->context);     // switch to the new context now at the front of the run queue
+    
+    // TODO TEMP
+    printf("leaving yield...\n");
 
     return new_context;
 }

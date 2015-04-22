@@ -22,7 +22,7 @@ int wc = 0;
 
 void reader1() {
 	while (true) {
-        printf("1\n");
+        printf("entering R1...\n");
         P(readingBlock);
         V(readingBlock);
 		P(reading);
@@ -48,17 +48,17 @@ void reader1() {
         rc--;
         if(rc == 0){
             V(writingBlock);
-            yield();
+            // yield();
         }
 		
 		V(reading);
-		//yield();
+        yield();
 	}
 }
 
 void reader2() {
 	while (true) {
-        printf("2\n");
+        printf("entering R2...\n");
 
         P(readingBlock);
         V(readingBlock);
@@ -86,17 +86,18 @@ void reader2() {
         rc--;
         if(rc == 0){
             V(writingBlock);
-            yield();
+            // yield();
         }
         
         V(reading);
-        //yield();
+
+        yield();
 	}
 }
 
 void reader3() {
 	while (true) {
-        printf("3\n");
+        printf("entering R3...\n");
 
         P(readingBlock);
         V(readingBlock);
@@ -116,24 +117,41 @@ void reader3() {
 		unsigned int read_number;
 		while (fscanf(file, "%d\n", &read_number) != EOF)
 			printf("R3 read %d\n", read_number);
+		// TODO EXT TEMP
+		printf("reading:\n%s\n", toString(reading->queue));
+		printf("readingBlock:\n%s\n", toString(readingBlock->queue));
+		printf("writing:\n%s\n", toString(writing->queue));
+		printf("writingBlock:\n%s\n", toString(writingBlock->queue));
+		printf("run queue:\n%s\n", toString(run_queue));
+		// TODO END TEMP
 			
 		fclose(file);
 		
         P(reading);
+        
+        // TODO TEMP
+        printf("Got here!\n");
         rc--;
+        // TODO TEMP
+        printf("Got here, too!\n");
         if(rc == 0){
+        	// TODO TEMP
+        	printf("and rc == 0\n");
             V(writingBlock);
-            yield();
+            // TODO TEMP
+            printf("V'd writingBlock\n");
+            // yield();
         }
         
         V(reading);
-        //yield();
+
+        yield();
     }
 }
 
 void writer1() {
 	while (true) {
-        printf("4\n");
+        printf("entering W1...\n");
 
 		P(writing);
         wc++;
@@ -158,10 +176,8 @@ void writer1() {
         V(writingBlock);
         P(writing);
         wc = wc - 1;
-        if(wc == 0){
+        if(wc == 0)
             V(readingBlock);
-            
-        }
 		V(writing);
 		
 		//yield();
@@ -170,7 +186,7 @@ void writer1() {
 
 void writer2() {
 	while (true) {
-        printf("5\n");
+        printf("entering W2...\n");
 
         P(writing);
         wc++;
@@ -194,10 +210,8 @@ void writer2() {
         V(writingBlock);
         P(writing);
         wc = wc - 1;
-        if(wc == 0){
+        if(wc == 0)
             V(readingBlock);
-            
-        }
         V(writing);
         
         yield();
@@ -210,8 +224,6 @@ int main(){
 	writing = newSemaphore(1);
     readingBlock = newSemaphore(1);
     writingBlock = newSemaphore(1);
-	
-
     
 	run_queue = newQueue();
 	
