@@ -6,8 +6,10 @@
 
 #define true 1
 
-struct Semaphore *reading, *writing;
-struct Semaphore *readingBlock, *writingBlock;
+struct Semaphore* reading;
+struct Semaphore* writing;
+struct Semaphore* readingBlock;
+struct Semaphore* writingBlock;
 
 int next_number = 0;
 
@@ -44,10 +46,11 @@ void reader1() {
         rc--;
         if(rc == 0){
             V(writingBlock);
+            yield();
         }
 		
 		V(reading);
-		yield();
+		//yield();
 	}
 }
 
@@ -81,10 +84,11 @@ void reader2() {
         rc--;
         if(rc == 0){
             V(writingBlock);
+            yield();
         }
         
         V(reading);
-        yield();
+        //yield();
 	}
 }
 
@@ -117,10 +121,11 @@ void reader3() {
         rc--;
         if(rc == 0){
             V(writingBlock);
+            yield();
         }
         
         V(reading);
-        yield();
+        //yield();
     }
 }
 
@@ -153,10 +158,11 @@ void writer1() {
         wc--;
         if(wc == 0){
             V(readingBlock);
+            yield();
         }
 		V(writing);
 		
-		yield();
+		//yield();
 	}
 }
 
@@ -188,10 +194,11 @@ void writer2() {
         wc--;
         if(wc == 0){
             V(readingBlock);
+            yield();
         }
         V(writing);
         
-        yield();
+        //yield();
 	}
 }
 
@@ -214,4 +221,6 @@ int main(){
 	start_thread(writer2);
 	
 	run();
+    
+    return 0;
 }
