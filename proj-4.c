@@ -7,38 +7,63 @@
 #define true 1
 
 struct Semaphore *reading, *writing;
+struct Semaphore *readingBlock, *writingBlock;
 
 int next_number = 0;
 
+
 //Global Variables
+int rc = 0;
+int wc = 0;
+
 void reader1() {
 	while (true) {
-		reading->value++;
-		P(writing);
+        printf("1\n");
+        P(readingBlock);
+        V(readingBlock);
+		P(reading);
+        rc++;
+        if(rc == 1){
+            P(writingBlock);
+        }
+        V(reading);
 		
 		FILE* file = fopen("test file.txt", "r");
 		if (file == NULL) {
 			printf("Reader 1 couldn't open the file!\n");
 			exit(2);
 		}
-		
+        
 		unsigned int read_number;
 		while (fscanf(file, "%d\n", &read_number) != EOF)
 			printf("R1 read %d\n", read_number);
 			
 		fclose(file);
+        
+        P(reading);
+        rc--;
+        if(rc == 0){
+            V(writingBlock);
+        }
 		
-		V(writing);
-		reading->value--;
-		
+		V(reading);
 		yield();
 	}
 }
 
 void reader2() {
 	while (true) {
-		reading->value++;
-		P(writing);
+        printf("2\n");
+
+        P(readingBlock);
+        V(readingBlock);
+        P(reading);
+        rc++;
+        if(rc == 1){
+            P(writingBlock);
+        }
+        V(reading);
+
 		
 		FILE* file = fopen("test file.txt", "r");
 		if (file == NULL) {
@@ -52,17 +77,29 @@ void reader2() {
 			
 		fclose(file);
 		
-		V(writing);
-		reading->value--;
-		
-		yield();
+        P(reading);
+        rc--;
+        if(rc == 0){
+            V(writingBlock);
+        }
+        
+        V(reading);
+        yield();
 	}
 }
 
 void reader3() {
 	while (true) {
-		reading->value++;
-		P(writing);
+        printf("3\n");
+
+        P(readingBlock);
+        V(readingBlock);
+        P(reading);
+        rc++;
+        if(rc == 1){
+            P(writingBlock);
+        }
+        V(reading);
 		
 		FILE* file = fopen("test file.txt", "r");
 		if (file == NULL) {
@@ -76,17 +113,29 @@ void reader3() {
 			
 		fclose(file);
 		
-		V(writing);
-		reading->value--;
-		
-		yield();
-	}
+        P(reading);
+        rc--;
+        if(rc == 0){
+            V(writingBlock);
+        }
+        
+        V(reading);
+        yield();
+    }
 }
 
 void writer1() {
 	while (true) {
-		P(reading);
+        printf("4\n");
+
 		P(writing);
+        wc++;
+        if(wc == 1){
+            P(readingBlock);
+        }
+        V(writing);
+        
+        P(writingBlock);
 		
 		FILE* file = fopen("test file.txt", "a");
 		if (file == NULL) {
@@ -99,6 +148,12 @@ void writer1() {
 		
 		fclose(file);
 		
+        V(writingBlock);
+        P(writing);
+        wc--;
+        if(wc == 0){
+            V(readingBlock);
+        }
 		V(writing);
 		
 		yield();
@@ -107,8 +162,15 @@ void writer1() {
 
 void writer2() {
 	while (true) {
-		P(reading);
-		P(writing);
+        printf("5\n");
+
+        P(writing);
+        wc++;
+        if(wc == 1){
+            P(readingBlock);
+        }
+        V(writing);
+        P(writingBlock);
 		
 		FILE* file = fopen("test file.txt", "a");
 		if (file == NULL) {
@@ -121,17 +183,27 @@ void writer2() {
 		
 		fclose(file);
 		
-		V(writing);
-		
-		yield();
+        V(writingBlock);
+        P(writing);
+        wc--;
+        if(wc == 0){
+            V(readingBlock);
+        }
+        V(writing);
+        
+        yield();
 	}
 }
 
 
 int main(){
 	reading = newSemaphore(1);
-	writing = newSemaphore(0);
+	writing = newSemaphore(1);
+    readingBlock = newSemaphore(1);
+    writingBlock = newSemaphore(1);
 	
+
+    
 	run_queue = newQueue();
 	
 	start_thread(reader1);
