@@ -42,11 +42,13 @@ void V(struct Semaphore* semaphore) {
 
     if (semaphore->value <= 0) {
         TCB_t *task_to_run = (TCB_t *) dequeue(semaphore->queue, FALSE);
-        if (task_to_run != NULL)
+        if (task_to_run != NULL){
             enqueue(run_queue, task_to_run);
+            yield();
+        }
     }
 
-    yield();
+    
 }
 
 #endif //_CSE340_PROJECT_3_SEM_H_

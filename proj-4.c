@@ -22,7 +22,6 @@ int wc = 0;
 
 void reader1() {
 	while (true) {
-        printf("1\n");
         P(readingBlock);
         V(readingBlock);
 		P(reading);
@@ -48,18 +47,15 @@ void reader1() {
         rc--;
         if(rc == 0){
             V(writingBlock);
-            yield();
         }
 		
 		V(reading);
-		//yield();
+		yield();
 	}
 }
 
 void reader2() {
 	while (true) {
-        printf("2\n");
-
         P(readingBlock);
         V(readingBlock);
         P(reading);
@@ -86,18 +82,15 @@ void reader2() {
         rc--;
         if(rc == 0){
             V(writingBlock);
-            yield();
         }
         
         V(reading);
-        //yield();
+        yield();
 	}
 }
 
 void reader3() {
 	while (true) {
-        printf("3\n");
-
         P(readingBlock);
         V(readingBlock);
         P(reading);
@@ -123,18 +116,15 @@ void reader3() {
         rc--;
         if(rc == 0){
             V(writingBlock);
-            yield();
         }
         
         V(reading);
-        //yield();
+        yield();
     }
 }
 
 void writer1() {
 	while (true) {
-        printf("4\n");
-
 		P(writing);
         wc++;
         if(wc == 1){
@@ -154,6 +144,7 @@ void writer1() {
 		printf("W1 wrote %d\n", next_number);
 		
 		fclose(file);
+        
 		
         V(writingBlock);
         P(writing);
@@ -164,14 +155,12 @@ void writer1() {
         }
 		V(writing);
 		
-		//yield();
+		yield();
 	}
 }
 
 void writer2() {
 	while (true) {
-        printf("5\n");
-
         P(writing);
         wc++;
         if(wc == 1){
